@@ -1,0 +1,24 @@
+# Earlier résumé versions, kept locally for reference only.
+# These must never reach the web server: they are superseded, and the cv_*
+# files are print layouts that hardcode absolute /tmp font paths.
+index_old.html
+index_prev.html
+cv_community_manager.html
+cv_developer.html
+cv_localizer.html
+
+# Local build/preview leftovers
+*.log
+*.tmp
+
+# OS and editor noise
+Desktop.ini
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+.DS_Store
+._*
+*.swp
+*~
+.idea/
+.vscode/

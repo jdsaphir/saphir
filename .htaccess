@@ -1,0 +1,49 @@
+# saphir.one — canonical host + HTTPS + clean URLs
+#
+#   http://anything/x        ->  https://www.saphir.one/x
+#   https://saphir.one/x     ->  https://www.saphir.one/x
+#   /developer               ->  serves developer.html
+#   /developer.html          ->  redirects to /developer
+#   /index.html, /index      ->  redirects to /
+#
+# Troubleshooting after upload:
+#   500 on every page  -> the host forbids "Options" here; delete the Options line.
+#   404 on /developer  -> AllowOverride is off and this file is being ignored.
+
+# MultiViews does its own extensionless matching and would fight the rules below.
+Options -MultiViews
+
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # ---- Canonical scheme and host -------------------------------------------
+  # Replaces the previous port-80 rule. Two changes worth knowing about:
+  #   - "=80" is an exact match; the old bare "80" pattern also matched port 8080.
+  #   - It now also fires on https://saphir.one (no www), which the old rule
+  #     missed, so the bare host no longer serves a duplicate copy of the site.
+  # Both conditions are ORed and produce a single redirect hop.
+  RewriteCond %{SERVER_PORT} =80 [OR]
+  RewriteCond %{HTTP_HOST} !^www\. [NC]
+  RewriteRule ^ https://www.saphir.one%{REQUEST_URI} [R=301,L,NE]
+
+  # ---- Clean URLs ----------------------------------------------------------
+  # /index.html and /index -> /
+  RewriteCond %{THE_REQUEST} \s/+index(\.html)?[\s?] [NC]
+  RewriteRule ^ https://www.saphir.one/ [R=301,L,NE]
+
+  # /page.html -> /page   (keeps older shared links working)
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  RewriteRule ^ https://www.saphir.one/%1 [R=301,L,NE]
+
+  # /page/ -> /page       (only when it is not a real directory)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+?)/$ https://www.saphir.one/$1 [R=301,L,NE]
+
+  # /page -> page.html    (internal, address bar keeps the clean URL)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.+)$ $1.html [L]
+</IfModule>
