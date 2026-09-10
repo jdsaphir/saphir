@@ -28,6 +28,18 @@ avatar.jpg
 assets/style.css  assets/site.js  assets/favicon.svg
 ```
 
+`avatar.jpg` is a 512x512 derivative of a master PNG that is kept locally and
+deliberately not tracked here. 512px covers the largest on-page use, the 132px
+landing hero, at 3x pixel density, and clears the minimum for social preview
+images. To regenerate it after changing the master:
+
+```bash
+ffmpeg -i avatar.png -vf "crop='min(iw,ih)':'min(iw,ih)',scale=512:512:flags=lanczos" -map_metadata -1 -q:v 6 -pix_fmt yuvj444p avatar.jpg
+```
+
+`4:4:4` chroma matters here: the artwork is saturated magenta and blue, and the
+default `4:2:0` subsampling visibly smears those edges at the same file size.
+
 `.htaccess` is what makes the extensionless URLs work, and it redirects both
 plain HTTP and the bare `saphir.one` host to `https://www.saphir.one`. Upload it
 first; if the site returns 500 afterwards, the host forbids the `Options`

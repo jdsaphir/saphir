@@ -7,6 +7,10 @@ cv_community_manager.html
 cv_developer.html
 cv_localizer.html
 
+# Master artwork for the avatar: 2620x2483 RGBA, 9.3 MB. Never served -- the
+# deployed avatar.jpg is generated from it. Keep it locally, never upload it.
+avatar.png
+
 # Local build/preview leftovers
 *.log
 *.tmp
