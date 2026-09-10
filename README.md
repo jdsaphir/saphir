@@ -34,8 +34,13 @@ landing hero, at 3x pixel density, and clears the minimum for social preview
 images. To regenerate it after changing the master:
 
 ```bash
-ffmpeg -i avatar.png -vf "crop='min(iw,ih)':'min(iw,ih)',scale=512:512:flags=lanczos" -map_metadata -1 -q:v 6 -pix_fmt yuvj444p avatar.jpg
+ffmpeg -i avatar.png -vf "crop='min(iw,ih)*0.78':'min(iw,ih)*0.78':'(iw-min(iw,ih)*0.78)/2+min(iw,ih)*0.03':'(ih-min(iw,ih)*0.78)/2-min(iw,ih)*0.02',scale=512:512:flags=lanczos" -map_metadata -1 -q:v 6 -pix_fmt yuvj444p avatar.jpg
 ```
+
+The crop takes the largest centred square, then keeps the middle 78% of it,
+nudged 3% right and 2% up to centre the dolphin. The master has generous empty
+space around the subject, and without that second step the dolphin is unreadable
+at the 30px header and 88px sidebar sizes.
 
 `4:4:4` chroma matters here: the artwork is saturated magenta and blue, and the
 default `4:2:0` subsampling visibly smears those edges at the same file size.
