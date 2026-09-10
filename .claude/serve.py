@@ -50,8 +50,11 @@ class CleanURLHandler(http.server.SimpleHTTPRequestHandler):
         return None
 
 
-class Server(socketserver.TCPServer):
+class Server(socketserver.ThreadingTCPServer):
+    # Threaded: a single-threaded server stalls the whole page when a browser
+    # holds a connection open, which looks exactly like the site being broken.
     allow_reuse_address = True
+    daemon_threads = True
 
 
 if __name__ == '__main__':

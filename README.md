@@ -23,10 +23,15 @@ Everything tracked here **except** `README.md` and `.claude/`:
 
 ```
 .htaccess
+favicon.ico
 index.html  general.html  developer.html  community.html  localizer.html
 avatar.jpg
-assets/style.css  assets/site.js  assets/favicon.svg
+assets/style.css  assets/site.js
+assets/favicon-32.png  assets/apple-touch-icon.png
 ```
+
+`favicon.ico` has to sit at the site root, because browsers request that exact
+path on their own whether or not a link tag points at it.
 
 `avatar.jpg` is a 512x512 derivative of a master PNG that is kept locally and
 deliberately not tracked here. 512px covers the largest on-page use, the 132px
@@ -41,6 +46,10 @@ The crop takes the largest centred square, then keeps the middle 78% of it,
 nudged 3% right and 2% up to centre the dolphin. The master has generous empty
 space around the subject, and without that second step the dolphin is unreadable
 at the 30px header and 88px sidebar sizes.
+
+The icons use that same crop so the tab matches the avatar. `favicon-32.png` and
+`apple-touch-icon.png` are the crop scaled to 32 and 180, and `favicon.ico`
+bundles 16, 32 and 48 pixel PNGs into one file for the root request.
 
 `4:4:4` chroma matters here: the artwork is saturated magenta and blue, and the
 default `4:2:0` subsampling visibly smears those edges at the same file size.
