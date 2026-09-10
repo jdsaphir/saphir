@@ -536,10 +536,12 @@ td:first-child { font-weight: 600; color: var(--ink); }
 .btn svg { width: 16px; height: 16px; fill: currentColor; }
 .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
 .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
-/* A handle with no profile URL behind it: looks like a chip, does not pretend to be a link. */
-.btn.static { cursor: default; color: var(--ink-2); }
-.btn.static:hover { border-color: var(--line); color: var(--ink-2); transform: none; }
-.btn.static svg { color: var(--ink-4); }
+/* A handle with no profile URL behind it. Only used on the landing page.
+   Inherits .btn's ink for both label and icon so it reads at the same weight as
+   the real buttons rather than looking disabled, but stays inert: no pointer,
+   and hover neither tints nor lifts it. */
+.btn.static { cursor: default; }
+.btn.static:hover { border-color: var(--line); color: var(--ink); transform: none; }
 
 .choose { margin-top: 64px; }
 .choose-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
