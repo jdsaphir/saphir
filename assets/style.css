@@ -42,7 +42,8 @@
   --radius: 14px;
   --radius-s: 8px;
   --ease: cubic-bezier(.4, 0, .2, 1);
-  --topbar-h: 62px;      /* fallback only: site.js writes the measured height */
+  --bar-row: 40px;       /* height of every item in the top bar row, on every page */
+  --topbar-h: 61px;      /* 10 + bar-row + 10 + 1px border. Fallback only: site.js measures it */
   --gutter-top: 32px;    /* space between topbar and page content */
 }
 
@@ -101,7 +102,10 @@
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* Always reserve the scrollbar's width. Otherwise a page that fits on screen and
+   one that scrolls centre their content differently, and navigating between
+   them slides the whole layout sideways by half a scrollbar. */
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
 
 body {
   font-family: var(--font-body);
@@ -147,7 +151,7 @@ button { font: inherit; }
   gap: 8px 18px;
 }
 .brand {
-  display: inline-flex; align-items: center; gap: 10px;
+  display: inline-flex; align-items: center; gap: 10px; min-height: var(--bar-row);
   color: var(--ink); font-weight: 600; font-size: 14.5px; letter-spacing: -.01em;
 }
 .brand:hover { color: var(--ink); }
@@ -161,7 +165,7 @@ button { font: inherit; }
   width: 100%; height: 100%; border-radius: 50%;
   object-fit: cover; display: block;
 }
-.topbar-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.topbar-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; min-height: var(--bar-row); }
 
 .icon-btn {
   width: 36px; height: 36px; border-radius: 10px;
@@ -183,12 +187,14 @@ button { font: inherit; }
 }
 
 /* Role switcher (segmented control) */
+/* Pinned to --bar-row: sized by its text it came out ~41px, taller than the
+   landing header's controls, so the brand shifted down on every resume. */
 .role-switch {
-  display: inline-flex; gap: 2px; padding: 3px;
+  display: inline-flex; gap: 2px; padding: 3px; height: var(--bar-row);
   background: var(--bg-soft); border: 1px solid var(--line-2); border-radius: 12px;
 }
 .role-switch a {
-  padding: 6px 13px; border-radius: 9px;
+  display: flex; align-items: center; padding: 0 13px; border-radius: 9px;
   font-size: 13px; font-weight: 500; color: var(--ink-3); white-space: nowrap;
   transition: color .2s var(--ease), background-color .2s var(--ease);
 }
@@ -200,7 +206,7 @@ button { font: inherit; }
 @media (max-width: 760px) {
   .role-switch { order: 3; width: 100%; overflow-x: auto; scrollbar-width: none; }
   .role-switch::-webkit-scrollbar { display: none; }
-  .role-switch a { flex: 1; text-align: center; padding: 6px 10px; }
+  .role-switch a { flex: 1; justify-content: center; padding: 0 10px; }
 }
 
 /* ---------- Layout ---------- */
