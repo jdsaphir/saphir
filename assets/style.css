@@ -42,7 +42,8 @@
   --radius: 14px;
   --radius-s: 8px;
   --ease: cubic-bezier(.4, 0, .2, 1);
-  --topbar-h: 58px;
+  --topbar-h: 62px;      /* fallback only: site.js writes the measured height */
+  --gutter-top: 32px;    /* space between topbar and page content */
 }
 
 /* Dark palette — system preference (unless the user explicitly chose light) */
@@ -203,7 +204,7 @@ button { font: inherit; }
 }
 
 /* ---------- Layout ---------- */
-.wrap { max-width: 1240px; margin: 0 auto; padding: 32px 24px 64px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: var(--gutter-top) 24px 64px; }
 
 .layout {
   display: grid;
@@ -212,11 +213,20 @@ button { font: inherit; }
   align-items: start;
 }
 
-/* Sidebar column: one sticky card on desktop, split into two cards on mobile */
+/* Sidebar column: one card on desktop, split into two cards on mobile.
+   Sticky, but with no nested scrollbar. site.js writes the real topbar height
+   to --topbar-h and this column's height to --side-h; `top` takes the smaller of
+     - its resting position, topbar + gutter, so pinning it causes no jump;
+     - the viewport minus its own height, which goes negative when the column is
+       taller than the screen: it then scrolls with the page until its bottom
+       edge is in view, and pins there.
+   Without JS, --side-h falls back to a huge value, top goes far negative, and
+   the column simply scrolls with the page. */
 .side-col {
-  position: sticky; top: calc(var(--topbar-h) + 16px);
-  max-height: calc(100vh - var(--topbar-h) - 32px);
-  overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  position: sticky;
+  top: min(calc(var(--topbar-h) + var(--gutter-top)),
+           calc(100vh - var(--side-h, 100000px) - 24px));
+  overflow: hidden; /* clips the gradient bar to the rounded corners */
   background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow-1);
 }
@@ -546,7 +556,6 @@ td:first-child { font-weight: 600; color: var(--ink); }
 .choose { margin-top: 64px; }
 .choose-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
 .choose h2 { font-family: var(--font-display); font-weight: 400; font-size: 34px; letter-spacing: -.01em; line-height: 1.1; }
-.choose-head p { color: var(--ink-3); font-size: 14.5px; }
 
 .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 26px; }
 .role-card {

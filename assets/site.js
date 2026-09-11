@@ -70,6 +70,24 @@
     printState = null;
   });
 
+  // Sticky sidebar: publish the real topbar height and the sidebar's own height
+  // so the CSS can pin it without a jump and without a nested scrollbar.
+  // Re-measured whenever either changes size: web fonts arriving, the role
+  // switcher wrapping onto a second row, or the window being resized.
+  var bar = document.querySelector('.topbar');
+  var side = document.querySelector('.side-col');
+  function measure() {
+    if (bar) root.style.setProperty('--topbar-h', bar.getBoundingClientRect().height + 'px');
+    if (side) root.style.setProperty('--side-h', side.getBoundingClientRect().height + 'px');
+  }
+  measure();
+  window.addEventListener('resize', measure);
+  if ('ResizeObserver' in window) {
+    var ro = new ResizeObserver(measure);
+    if (bar) ro.observe(bar);
+    if (side) ro.observe(side);
+  }
+
   // Highlight the section currently in view in the sidebar's "On this page" list.
   var links = document.querySelectorAll('.side-nav a[href^="#"]');
   if (links.length && 'IntersectionObserver' in window) {

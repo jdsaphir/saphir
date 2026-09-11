@@ -17,6 +17,12 @@ class CleanURLHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
 
+    def end_headers(self):
+        # Without this the browser caches heuristically from Last-Modified and
+        # keeps showing an old copy after an edit, with no request to revalidate.
+        self.send_header('Cache-Control', 'no-store')
+        super().end_headers()
+
     def send_head(self):
         parts = urllib.parse.urlsplit(self.path)
         path = urllib.parse.unquote(parts.path)
